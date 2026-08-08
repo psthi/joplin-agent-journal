@@ -1,0 +1,7 @@
+{
+  "token": "your_joplin_web_clipper_token_here",
+  "api_url": "http://localhost:41184",
+  "default_notebook": "Journals",
+  "default_agent": "AGY (Antigravity)",
+  "date_format": "%m-%d-%Y"
+}

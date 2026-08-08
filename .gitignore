@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Secrets & Configs
+.env
+config.json
+
+# System & IDE
+.DS_Store
+.vscode/
+.idea/
