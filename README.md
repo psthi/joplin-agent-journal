@@ -14,7 +14,7 @@
 
 - 🔌 **Plug-and-Play Out-of-the-Box**: Zero complex setup. Includes smart token detection (`JOPLIN_TOKEN` env, `.env`, or Joplin MCP configs).
 - 🤖 **Universal Agent Skill (`SKILL.md`)**: Drop-in skill file compatible with Antigravity, Nanobot, Claude Code, Cursor, and Windsurf.
-- 📅 **Standardized Journaling**: Enforces `MM-DD-YYYY` date formats, structured Markdown headers, and automatic tagging (`#journal`, `#agent-antigravity`, `#agent-nanobot`, `#agent-hermes`).
+- 📅 **Standardized Journaling**: Enforces `MM-DD-YYYY` date formats and structured Markdown headers.
 - 📁 **Automated Notebook Management**: Auto-detects or creates target notebooks (e.g. `Journals`) dynamically.
 - 💻 **CLI Tool Included (`joplin-log`)**: Standalone executable CLI tool for humans and terminal scripts.
 

@@ -73,31 +73,6 @@ def get_or_create_notebook(api_url, token, name):
         print(f"❌ Failed to create notebook '{name}' in Joplin: {res.text}")
         sys.exit(1)
 
-def get_or_create_tag(api_url, token, tag_name):
-    """Finds or creates a Joplin tag by name."""
-    tag_name = tag_name.strip().lstrip("#").lower()
-    try:
-        res = requests.get(f"{api_url}/tags?token={token}").json()
-        for tag in res.get("items", []):
-            if tag.get("title").strip().lower() == tag_name:
-                return tag.get("id")
-        
-        res = requests.post(f"{api_url}/tags?token={token}", json={"title": tag_name})
-        if res.status_code == 200:
-            return res.json().get("id")
-    except Exception:
-        pass
-    return None
-
-def tag_note(api_url, token, note_id, tag_name):
-    """Attaches a tag to a note."""
-    tag_id = get_or_create_tag(api_url, token, tag_name)
-    if tag_id and note_id:
-        try:
-            requests.post(f"{api_url}/tags/{tag_id}/notes?token={token}", json={"id": note_id})
-        except Exception:
-            pass
-
 def main():
     parser = argparse.ArgumentParser(description="Multi-Agent Joplin Journal Logger (Plug-and-Play)")
     parser.add_argument("-a", "--agent", default="AGY (Antigravity)", help="Agent name (e.g. Antigravity, Nanobot, Hermes, User)")
@@ -109,7 +84,6 @@ def main():
     parser.add_argument("--specs", default="", help="Hardware & Technical Specs")
     parser.add_argument("--next", default="", help="Next Steps & Action Items")
     parser.add_argument("-n", "--notebook", default=DEFAULT_NOTEBOOK, help="Target Joplin Notebook name")
-    parser.add_argument("--tags", default="", help="Comma-separated additional tags")
     parser.add_argument("--date", default="", help="Date string in MM-DD-YYYY format")
     parser.add_argument("-k", "--token", default="", help="Joplin Web Clipper API Token")
     parser.add_argument("--url", default=DEFAULT_API_URL, help="Joplin Web Clipper API Base URL")
@@ -130,41 +104,26 @@ def main():
         args.body = sys.stdin.read().strip()
         
     date_str = args.date if args.date else datetime.datetime.now().strftime("%m-%d-%Y")
-    
+
     # Format Joplin note title
     if args.project:
         note_title = f"{date_str} - [{args.project}] {args.title}"
     else:
         note_title = f"{date_str} - [{args.agent}] {args.title}"
-        
-    # Build tags list
-    tags_list = ["journal"]
-    if args.project:
-        proj_tag = args.project.lower().replace(" ", "-")
-        tags_list.append(proj_tag)
-    agent_tag = f"agent-{args.agent.split()[0].lower()}"
-    tags_list.append(agent_tag)
-    
-    if args.tags:
-        for t in args.tags.split(","):
-            if t.strip():
-                tags_list.append(t.strip())
-                
-    tags_header = " ".join([f"`#{t}`" for t in tags_list])
-    
+
     # Construct Markdown note body
     content = f"""# 📅 Journal Entry: {args.title}
-**Date**: {date_str}  
-**Agent**: {args.agent}  
+**Date**: {date_str}
+**Agent**: {args.agent}
 """
     if args.project:
-        content += f"**Project**: {args.project}  \n"
-        
-    content += f"**Tags**: {tags_header}  \n\n---\n\n"
-    
+        content += f"**Project**: {args.project}\n"
+
+    content += "\n---\n\n"
+
     if args.objective:
         content += f"### 🎯 Objective / Focus Area\n{args.objective}\n\n"
-        
+
     if args.progress or args.body:
         content += f"### 💡 Progress & Key Changes\n"
         if args.progress:
@@ -172,30 +131,25 @@ def main():
         if args.body:
             content += f"{args.body}\n"
         content += "\n"
-        
+
     if args.specs:
         content += f"### 🛠️ Hardware & Technical Specs\n{args.specs}\n\n"
-        
+
     if args.next:
         content += f"### 📌 Next Steps & Action Items\n{args.next}\n\n"
-        
+
     notebook_id = get_or_create_notebook(api_url, token, args.notebook)
-    
+
     note_payload = {
         "parent_id": notebook_id,
         "title": note_title,
         "body": content
     }
-    
+
     res = requests.post(f"{api_url}/notes?token={token}", json=note_payload)
     if res.status_code == 200:
         note_data = res.json()
         note_id = note_data.get("id")
-        
-        # Tag note in Joplin
-        for t in tags_list:
-            tag_note(api_url, token, note_id, t)
-            
         print(f"✓ Created Joplin Journal entry '{note_title}' in notebook '{args.notebook}' (ID: {note_id})")
     else:
         print(f"❌ Failed to create note in Joplin (HTTP {res.status_code}): {res.text}")

@@ -34,7 +34,6 @@ joplin-log \
 - `--specs`: Technical or hardware specifications.
 - `--next`: Next steps / action items.
 - `-n`, `--notebook`: Target Joplin notebook (Default: `Journals`).
-- `--tags`: Additional comma-separated tags.
 - `--date`: Date override in `MM-DD-YYYY` format (Defaults to current date `MM-DD-YYYY`).
 - `-k`, `--token`: Joplin Web Clipper API Token (Auto-detected if `JOPLIN_TOKEN` env is set).
 
@@ -51,7 +50,7 @@ If an agent cannot execute shell commands directly, it can send an HTTP POST req
 {
   "parent_id": "<NOTEBOOK_ID>",
   "title": "08-08-2026 - [Project Name] Session Summary",
-  "body": "# 📅 Journal Entry: Session Summary\n**Date**: 08-08-2026  \n**Agent**: Hermes  \n**Project**: Project Name  \n**Tags**: `#journal` `#project-name` `#agent-hermes`  \n\n---\n\n### 💡 Progress & Key Changes\n- Refactored API routing.\n"
+  "body": "# 📅 Journal Entry: Session Summary\n**Date**: 08-08-2026\n**Agent**: Hermes\n**Project**: Project Name\n\n---\n\n### 💡 Progress & Key Changes\n- Refactored API routing.\n"
 }
 ```
 
@@ -63,10 +62,9 @@ When creating a journal entry, structure the markdown body according to this for
 
 ```markdown
 # 📅 Journal Entry: <Title>
-**Date**: MM-DD-YYYY  
-**Agent**: <Agent Name>  
-**Project**: <Project Name>  
-**Tags**: `#journal` `#<project-tag>` `#agent-<agent>`  
+**Date**: MM-DD-YYYY
+**Agent**: <Agent Name>
+**Project**: <Project Name>
 
 ---
 
@@ -83,11 +81,3 @@ When creating a journal entry, structure the markdown body according to this for
 - [ ] Task 1
 - [ ] Task 2
 ```
-
----
-
-## 📌 Standard Tags
-- `#journal`
-- `#agent-antigravity`
-- `#agent-nanobot`
-- `#agent-hermes`
